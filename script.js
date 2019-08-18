@@ -82,6 +82,26 @@ const scrollToUser = ($el, user, listSelector) => {
   });
 };
 
+const likeRandomPostInUserProfile = $posts =>
+  new Promise(async res => {
+    getRandomPost($posts).click();
+    console.log("post opened");
+    await delay(2000);
+
+    $(LIKE_BUTTON).click();
+    console.log("liked!");
+    await delay(3000);
+
+    await historyBack();
+    res();
+  });
+
+const randomIntFromInterval = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
+const getRandomPost = $posts =>
+  $posts[randomIntFromInterval(0, $posts.length - 1)];
+
 const openLikesDialog = buttonSelector =>
   new Promise(async res => {
     const $likedButton = $(buttonSelector);
@@ -121,15 +141,7 @@ initLikeFromLike = async (startUser, likePerUser = 1) => {
 
     if ($posts.length) {
       for (var i = 0; i < Math.min(likePerUser, $posts.length); i++) {
-        getRandomPost($posts).click();
-        console.log("post opened");
-        await delay(2000);
-
-        $(LIKE_BUTTON).click();
-        console.log("liked!");
-        await delay(3000);
-
-        await historyBack();
+        await likeRandomPostInUserProfile($posts);
       }
     }
 
@@ -139,12 +151,6 @@ initLikeFromLike = async (startUser, likePerUser = 1) => {
 
   initLiked(startUser);
 };
-
-const randomIntFromInterval = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
-
-const getRandomPost = $posts =>
-  $posts[randomIntFromInterval(0, $posts.length - 1)];
 
 console.log("content script loaded");
 
