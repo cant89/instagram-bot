@@ -91,7 +91,7 @@ const openLikesDialog = buttonSelector =>
     res();
   });
 
-initLikeFromLike = async startUser => {
+initLikeFromLike = async (startUser, likePerUser = 1) => {
   if (!startUser) {
     console.log("error: choose a user from the list to start from");
   }
@@ -120,15 +120,17 @@ initLikeFromLike = async startUser => {
     const $posts = $(POST_IN_LIST);
 
     if ($posts.length) {
-      getRandomPost($posts).click();
-      console.log("post opened");
-      await delay(2000);
+      for (var i = 0; i < Math.min(likePerUser, $posts.length); i++) {
+        getRandomPost($posts).click();
+        console.log("post opened");
+        await delay(2000);
 
-      $(LIKE_BUTTON).click();
-      console.log("liked!");
-      await delay(3000);
+        $(LIKE_BUTTON).click();
+        console.log("liked!");
+        await delay(3000);
 
-      await historyBack();
+        await historyBack();
+      }
     }
 
     await historyBack();
@@ -148,6 +150,6 @@ console.log("content script loaded");
 
 chrome.runtime.onMessage.addListener(function(request) {
   if (request.action === "initLikeFromLike") {
-    initLikeFromLike(request.startUser);
+    initLikeFromLike(request.startUser, request.likePerUser);
   }
 });
