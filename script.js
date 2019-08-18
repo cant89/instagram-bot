@@ -116,6 +116,10 @@ initLikeFromLike = async (startUser, likePerUser = 1) => {
     console.log("error: choose a user from the list to start from");
   }
 
+  if (typeof likePerUser !== "number") {
+    likePerUser = 1;
+  }
+
   const initLiked = async startUser => {
     const prevUser = startUser;
 
@@ -129,8 +133,6 @@ initLikeFromLike = async (startUser, likePerUser = 1) => {
     await scrollToUser($scroller, prevUser, RENDERED_LIKES_LIST);
 
     const userLink = getLinkOfNextUser(RENDERED_LIKES_LIST, prevUser);
-
-    $(userLink).css("background", "#ffcdcd");
     await delay(2000);
 
     userLink.click();
@@ -139,8 +141,11 @@ initLikeFromLike = async (startUser, likePerUser = 1) => {
 
     const $posts = $(POST_IN_LIST);
 
+    const numberOfLikesForThisUser = Math.min(likePerUser, $posts.length);
+    console.log(`${numberOfLikesForThisUser} likes for user ${userLink.title}`);
+
     if ($posts.length) {
-      for (var i = 0; i < Math.min(likePerUser, $posts.length); i++) {
+      for (var i = 0; i < numberOfLikesForThisUser; i++) {
         await likeRandomPostInUserProfile($posts);
       }
     }
