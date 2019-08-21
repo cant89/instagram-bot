@@ -1,14 +1,14 @@
 {
   "name": "InstaBot",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "share the love",
   "content_scripts": [
     {
       "matches": ["https://*.instagram.com/*"],
-      "js": ["jquery.min.js", "script.js"]
+      "js": ["jquery.min.js", "index.js"]
     }
   ],
-  "page_action": {
+  "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/get_started16.png",

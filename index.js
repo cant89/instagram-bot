@@ -68,18 +68,21 @@ const historyBack = () =>
   });
 
 const scrollToUser = ($el, user, listSelector) => {
-  return new Promise(res => {
-    let scrolling = setInterval(() => {
-      if (isUserVisibleInList(user, $(listSelector))) {
-        clearInterval(scrolling);
+  const resolver = async res => {
+    await delay(300);
+    requestAnimationFrame(() => {
+      if (!isUserVisibleInList(user, $(listSelector))) {
+        scrollEl($el, 300);
+        resolver(res);
+      } else {
         scrollEl($el, 50);
         setTimeout(res, 2000);
         console.log("Scrolled to user");
-      } else {
-        scrollEl($el, 300);
       }
-    }, 1000);
-  });
+    });
+  };
+
+  return new Promise(resolver);
 };
 
 const likeRandomPostInUserProfile = $posts =>
